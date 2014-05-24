@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,52 +16,108 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Meeko</h1>
-        <p>A platform for implementing component-based systems</p>
+        <h1 class="header">Meeko</h1>
+        <p class="header">A platform for implementing component-based systems and data analysis</p>
 
 
-        <p class="view"><a href="https://github.com/meeko">View My GitHub Profile</a></p>
+
+        <ul>
+          <li><a class="buttons github" href="https://github.com/meeko">GitHub Profile</a></li>
+        </ul>
 
       </header>
       <section>
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="welcome-to-meeko" class="anchor" href="#welcome-to-meeko"><span class="octicon octicon-link"></span></a>Welcome to Meeko.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Meeko is a tiny single-node platform as a service that makes it very easy to build systems that consist of multiple components (in this case processes) that communicate with each other. The platform exports various services that the components (called <em>agents</em>) can use to exchange data. Each service implements one of the popular communication patters, e.g. publish-subscribe or request-reply, or some other functionality that is useful for the agents.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>The platform consists of three basic component:</p>
+
+<ul>
+<li>
+<a href="https://github.com/meeko/meekod">meekod</a> is the core component (process) that contains the component supervisor and communication broker.</li>
+<li>
+<a href="https://github.com/meeko/meeko">meeko</a> is a command line management utility that can be used to install new components into the system, then configure and start them.</li>
+<li>
+<a href="http://godoc.org/github.com/meeko/go-meeko/agent">go-meeko</a> is the Go client library that can be used by the components to connect to all the communication services. It makes the communication very simple and friendly.</li>
+</ul><h3>
+<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h3>
+
+<pre><code>$ meeko install \\
+    git+https://github.com/meeko-contrib/meeko-collector-github \\
+    as gh-collector
+&gt;&gt;&gt; Creating the agent workspace ... OK
+&gt;&gt;&gt; Cloning the agent repository ...  
+Cloning into '/var/lib/meeko/workspace/gh-collector/_stage'...
+&lt;&lt;&lt; OK 
+&gt;&gt;&gt; Reading agent.json ... OK 
+&gt;&gt;&gt; Validating agent.json ... OK 
+&gt;&gt;&gt; Moving files into place ... OK 
+&gt;&gt;&gt; Running the install hook ...  
++ godep go install -v
+github.com/meeko-contrib/go-meeko-webhook-receiver/receiver/server
+github.com/meeko/go-meeko/meeko/services
+github.com/meeko/go-meeko/meeko/services/logging
+github.com/cihub/seelog
+github.com/tchap/go-patricia/patricia
+github.com/meeko/go-meeko/meeko/services/pubsub
+github.com/meeko/go-meeko/meeko/services/rpc
+github.com/dmotylev/nutrition
+github.com/pebbe/zmq3
+github.com/meeko/go-meeko/meeko/transports/zmq3/logging
+github.com/meeko/go-meeko/meeko/transports/zmq3/loop
+github.com/ugorji/go/codec
+github.com/meeko/go-meeko/meeko/utils/codecs
+github.com/meeko/go-meeko/meeko/transports/zmq3/pubsub
+github.com/meeko/go-meeko/meeko/transports/zmq3/rpc
+github.com/meeko/go-meeko/agent
+github.com/meeko-contrib/go-meeko-webhook-receiver/receiver
+github.com/meeko-contrib/meeko-collector-github/handler
+github.com/meeko-contrib/meeko-collector-github
+&lt;&lt;&lt; OK 
+&gt;&gt;&gt; Inserting the agent database record ... OK 
+
+Success 
+$ meeko info gh-collector
+Alias:          gh-collector
+Name:           meeko-collector-github
+Version:        0.0.1
+Description:    Meeko collector for GitHub events
+Repository:     git+https://github.com/meeko-contrib/meeko-collector-github
+Variables:
+                Name:   LISTEN_ADDRESS
+                Usage:  TCP network address to listen on; format HOST:PORT
+                Type:   string
+                Value:  unset
+
+                Name:   ACCESS_TOKEN
+                Usage:  token to be used for hooks authentication
+                Type:   string
+                Value:  unset
+
+# Listen on localhost because we are behind Nginx.
+$ meeko set LISTEN_ADDRESS for gh-collector to localhost:8888
+
+Success
+$ meeko set -ask ACCESS_TOKEN for gh-collector
+Insert the value of ACCESS_TOKEN: 
+
+Success
+$ meeko start -watch gh-collector
+&gt;&gt;&gt; Streaming logs for agent gh-collector
+[INFO] Logging service initialised
+[INFO] PubSub service initialised
+[INFO] RPC service initialised
+[INFO] Forwarding github.issues
 </code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
       <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
