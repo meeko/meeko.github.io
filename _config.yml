@@ -1,0 +1,8 @@
+title: Meeko
+description: A platform for implementing component-based systems and data analysis
+google_analytics: UA-51215145-1
+show_downloads: true
+theme: jekyll-theme-dinky
+
+gems:
+  - jekyll-mentions
